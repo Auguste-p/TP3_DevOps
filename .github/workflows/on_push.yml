@@ -34,7 +34,7 @@ jobs:
     
   Helm:
     name: Install Helm
-    needs: [Azure]
+    # needs: Azure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -47,7 +47,7 @@ jobs:
     
   Helm_nginx:
     name: Install nginx ingress controller
-    needs: [Azure]
+    # needs: Azure
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
@@ -62,7 +62,7 @@ jobs:
 
   Helm_redis:
     name: Install redis
-    needs: [Azure]
+    # needs: Azure
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
@@ -77,7 +77,7 @@ jobs:
 
   Terraform:
     name: Terraform init+validate+plan
-    needs: [Azure]
+    # needs: Azure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
