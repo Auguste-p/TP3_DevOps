@@ -72,15 +72,15 @@ provider "helm" {
   #   password=""
   # }
 }
+# On peut installer nginx ingress controller avec helm depuis terraform comme ca
+# resource "helm_release" "nginx_ingress" {
+#   name = "nginx-ingress-controller"
 
-resource "helm_release" "nginx_ingress" {
-  name = "nginx-ingress-controller"
+#   repository = "https://charts.bitnami.com/bitnami"
+#   chart      = "nginx-ingress-controller"
 
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "nginx-ingress-controller"
-
-  set {
-    name  = "controller.service.annotation"
-    value = "/service/.beta/.kubernetes/.io/azure-load-balancer-health-probe-request-path/=/healthz"
-  }
-}
+#   set {
+#     name  = "controller.service.annotation"
+#     value = "/service/.beta/.kubernetes/.io/azure-load-balancer-health-probe-request-path/=/healthz"
+#   }
+# }
