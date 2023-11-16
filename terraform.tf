@@ -66,6 +66,7 @@ provider "helm" {
   kubernetes {
     config_path = ".kube/config"
   }
+  # On peut installer redis avec helm depuis terraform mais je n'y suis pas arrivé
   # {
   #   url = "oci://registry-1.docker.io/bitnamicharts/redis"
   #   username=""

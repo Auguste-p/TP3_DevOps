@@ -25,6 +25,40 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Install Helm
+      # needs: Azure
+      - uses: actions/checkout@v3
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.2.4
+      - name: Helm version
+        run: helm version
+      
+      - name: Install nginx ingress controller
+      # needs: Azure
+      - uses: actions/checkout@v3
+      - name: Link to kubeconfig
+        run: export KUBECONFIG=.kube/config
+      - name: Install nginx ingress controller
+        run: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+      - name: Update helm repo
+        run: helm repo update
+      - name: Install nginx ingress controller
+        run: helm install nginx-ingress ingress-nginx/ingress-nginx
+
+      - name: Install redis
+      # needs: Azure
+      - uses: actions/checkout@v3
+      - name: Link to kubeconfig
+        run: export KUBECONFIG=.kube/config
+      - name: Install redis
+        run: helm repo add bitnami https://charts.bitnami.com/bitnami
+      - name: Update helm repo
+        run: helm repo update
+      - name: Install redis
+        run: helm install redis bitnami/redis
+
       - name: Install dependencies
         run: python -m pip install --upgrade pip && pip install azure-cli
       # Selon moi, cette partie ne marche pas avec mes identifiants car il y a des caractères spéciaux dans le mot de passe, ce qui doit perturber la commande (malheureusement je ne peux pas le modifier car c'est un compte fourni par l'école)
@@ -62,45 +96,3 @@ jobs:
         id: apply
         run: terraform apply -auto-approve
     
-  # Helm:
-  #   name: Install Helm
-  #   # needs: Azure
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Install Helm
-  #       uses: azure/setup-helm@v1
-  #       with:
-  #         version: v3.2.4
-  #     - name: Helm version
-  #       run: helm version
-    
-  # Helm_nginx:
-  #   name: Install nginx ingress controller
-  #   # needs: Azure
-  #   runs-on: ubuntu-latest
-  #   steps: 
-  #     - uses: actions/checkout@v3
-  #     - name: Link to kubeconfig
-  #       run: export KUBECONFIG=.kube/config
-  #     - name: Install nginx ingress controller
-  #       run: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-  #     - name: Update helm repo
-  #       run: helm repo update
-  #     - name: Install nginx ingress controller
-  #       run: helm install nginx-ingress ingress-nginx/ingress-nginx
-
-  # Helm_redis:
-  #   name: Install redis
-  #   # needs: Azure
-  #   runs-on: ubuntu-latest
-  #   steps: 
-  #     - uses: actions/checkout@v3
-  #     - name: Link to kubeconfig
-  #       run: export KUBECONFIG=.kube/config
-  #     - name: Install redis
-  #       run: helm repo add bitnami https://charts.bitnami.com/bitnami
-  #     - name: Update helm repo
-  #       run: helm repo update
-  #     - name: Install redis
-  #       run: helm install redis bitnami/redis
