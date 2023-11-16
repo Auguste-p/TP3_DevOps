@@ -32,17 +32,17 @@ jobs:
       - name: Azure CLI version
         run: az login --tenant ${{ secrets.TENANT_ID }} -u ${{ secrets.USERNAME }} -p ${{ secrets.AZURE_CREDENTIALS }}
     
-  # Helm:
-  #   name: Install Helm
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Install Helm
-  #       uses: azure/setup-helm@v1
-  #       with:
-  #         version: v3.2.4
-  #     - name: Helm version
-  #       run: helm version
+  Helm:
+    name: Install Helm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.2.4
+      - name: Helm version
+        run: helm version
     
   Helm_nginx:
     name: Install nginx ingress controller
@@ -74,7 +74,7 @@ jobs:
 
   Terraform:
     name: Terraform init+validate+plan
-    needs: [Azure, Helm_nginx, Helm_redis]
+    #needs: [Azure, Helm_nginx, Helm_redis]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
