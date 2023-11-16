@@ -49,12 +49,12 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
+      - name: Link to kubeconfig
+        run: export KUBECONFIG=.kube/config
       - name: Install nginx ingress controller
         run: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
       - name: Update helm repo
         run: helm repo update
-      - name: Link to kubeconfig
-        run: export KUBECONFIG=.kube/config
       - name: Install nginx ingress controller
         run: helm install nginx-ingress ingress-nginx/ingress-nginx
 
@@ -63,12 +63,12 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
+      - name: Link to kubeconfig
+        run: export KUBECONFIG=.kube/config
       - name: Install redis
         run: helm repo add bitnami https://charts.bitnami.com/bitnami
       - name: Update helm repo
         run: helm repo update
-      - name: Link to kubeconfig
-        run: export KUBECONFIG=.kube/config
       - name: Install redis
         run: helm install redis bitnami/redis
 
