@@ -41,15 +41,15 @@ resource "azurerm_subnet" "subnet_terraform" {
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
-  name = "aks"
-  location = azurerm_resource_group.resource_group_terraform.location
+  name                = "aks"
+  location            = azurerm_resource_group.resource_group_terraform.location
   resource_group_name = azurerm_resource_group.resource_group_terraform.name
-  dns_prefix = "aks"
+  dns_prefix          = "aks"
 
   default_node_pool {
-    name = "default"
+    name       = "default"
     node_count = 1
-    vm_size = "Standard_D2_v2"
+    vm_size    = "Standard_D2_v2"
   }
 
   identity {
@@ -58,6 +58,27 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 resource "local_file" "kubeconfig" {
-  content = azurerm_kubernetes_cluster.aks.kube_config_raw
+  content  = azurerm_kubernetes_cluster.aks.kube_config_raw
   filename = ".kube/config"
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = ".kube/config"
+  }
+  registry {
+    url = "oci://registry-1.docker.io/bitnamicharts/redis"
+  }
+}
+
+resource "helm_release" "nginx_ingress" {
+  name = "nginx-ingress-controller"
+
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "nginx-ingress-controller"
+
+  set {
+    name  = "controller.service.annotation"
+    value = "/service/.beta/.kubernetes/.io/azure-load-balancer-health-probe-request-path/=/healthz"
+  }
 }
