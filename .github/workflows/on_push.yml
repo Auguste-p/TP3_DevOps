@@ -30,7 +30,7 @@ jobs:
           pip install azure-cli
       - name: Login via Azure CLI
         run: |
-          az login --tenant ${{ secrets.TENANT_ID }} -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }}
+          az login --tenant ${{ secrets.TENANT_ID }} -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }} > /dev/null
           
       - name: Terraform fmt
         id: fmt
