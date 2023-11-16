@@ -14,23 +14,55 @@ on:
 
 jobs:
   Azure:
-    name: Install Azure CLI
+    name: Install Azure CLI + terraform
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
+      - uses: hashicorp/setup-terraform@v2
+      
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install azure-cli
+      - name: Login via Azure CLI
+        run: |
+          az login --tenant ${{ secrets.AZURE_TENANT_ID }} -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }}
+          
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+      
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+      
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan
+        continue-on-error: true
 
-      - name: Azure CLI version
-        run: az login --tenant ${{ secrets.TENANT_ID }} -u ${{ secrets.USERNAME }} -p ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Manual approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: Auguste-p
+          minimum-approvals: 1
+          issue-title: "Approval needed to go further"
+          issue-body: "Please approve or deny the terraform apply"
+          exclude-workflow-initiator-as-approver: false
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve
     
   # Helm:
   #   name: Install Helm
@@ -74,54 +106,3 @@ jobs:
   #       run: helm repo update
   #     - name: Install redis
   #       run: helm install redis bitnami/redis
-
-  Terraform:
-    name: Terraform init+validate+plan
-    # needs: Azure
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-      
-      - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -check
-        continue-on-error: true
-      
-      - name: Terraform Init
-        id: init
-        run: terraform init
-      
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate
-      
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan
-        continue-on-error: true
-    
-  Terraform_apply:
-    name: Terraform init+validate+plan
-    needs: Manual_approval
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-
-      - name: Terraform Apply
-        id: apply
-        run: terraform apply
-
-  Manual_approval:
-    name: Manual approval
-    runs-on: ubuntu-latest
-    steps:
-      - uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: Auguste-p
-          minimum-approvals: 1
-          issue-title: "Approval needed to go further"
-          issue-body: "Please approve or deny the terraform apply"
-          exclude-workflow-initiator-as-approver: false
