@@ -25,31 +25,31 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Install Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.2.4
+      # - name: Install Helm
+      #   uses: azure/setup-helm@v1
+      #   with:
+      #     version: v3.2.4
           
-      - name: Helm version
-        run: helm version
+      # - name: Helm version
+      #   run: helm version
       
-      - name: Link to kubeconfig
-        run: export KUBECONFIG=.kube/config
+      # - name: Link to kubeconfig
+      #   run: export KUBECONFIG=.kube/config
 
-      - name: Install nginx ingress controller
-        run: |
-          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-          helm repo update
-          helm install nginx-ingress ingress-nginx/ingress-nginx
+      # - name: Install nginx ingress controller
+      #   run: |
+      #     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+      #     helm repo update
+      #     helm install nginx-ingress ingress-nginx/ingress-nginx
 
-      - name: Link to kubeconfig
-        run: export KUBECONFIG=.kube/config
+      # - name: Link to kubeconfig
+      #   run: export KUBECONFIG=.kube/config
 
-      - name: Install redis
-        run: |
-          helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm repo update
-          helm install redis bitnami/redis
+      # - name: Install redis
+      #   run: |
+      #     helm repo add bitnami https://charts.bitnami.com/bitnami
+      #     helm repo update
+      #     helm install redis bitnami/redis
 
       - name: Install dependencies
         env: 
