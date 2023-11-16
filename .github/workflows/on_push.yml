@@ -54,7 +54,7 @@ jobs:
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
-          approvers: Auguste-p
+          approvers: ${{ secrets.USERNAME_GITHUB }}
           minimum-approvals: 1
           issue-title: "Approval needed to go further"
           issue-body: "Please approve or deny the terraform apply"
