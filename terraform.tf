@@ -66,9 +66,11 @@ provider "helm" {
   kubernetes {
     config_path = ".kube/config"
   }
-  registry {
-    url = "oci://registry-1.docker.io/bitnamicharts/redis"
-  }
+  # {
+  #   url = "oci://registry-1.docker.io/bitnamicharts/redis"
+  #   username=""
+  #   password=""
+  # }
 }
 
 resource "helm_release" "nginx_ingress" {
