@@ -30,50 +30,50 @@ jobs:
           pip install azure-cli
 
       - name: Azure CLI version
-        run: az login --tenant ${{ secrets.TENANT_ID }} -u ${{ secrets.USERNAME }} -p ${{ secrets.AZURE_CREDENTIALS }}
+        run: az login -u ${{ secrets.USERNAME }} -p ${{ secrets.AZURE_CREDENTIALS }}
     
-  Helm:
-    name: Install Helm
-    # needs: Azure
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.2.4
-      - name: Helm version
-        run: helm version
+  # Helm:
+  #   name: Install Helm
+  #   # needs: Azure
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Install Helm
+  #       uses: azure/setup-helm@v1
+  #       with:
+  #         version: v3.2.4
+  #     - name: Helm version
+  #       run: helm version
     
-  Helm_nginx:
-    name: Install nginx ingress controller
-    # needs: Azure
-    runs-on: ubuntu-latest
-    steps: 
-      - uses: actions/checkout@v3
-      - name: Link to kubeconfig
-        run: export KUBECONFIG=.kube/config
-      - name: Install nginx ingress controller
-        run: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-      - name: Update helm repo
-        run: helm repo update
-      - name: Install nginx ingress controller
-        run: helm install nginx-ingress ingress-nginx/ingress-nginx
+  # Helm_nginx:
+  #   name: Install nginx ingress controller
+  #   # needs: Azure
+  #   runs-on: ubuntu-latest
+  #   steps: 
+  #     - uses: actions/checkout@v3
+  #     - name: Link to kubeconfig
+  #       run: export KUBECONFIG=.kube/config
+  #     - name: Install nginx ingress controller
+  #       run: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  #     - name: Update helm repo
+  #       run: helm repo update
+  #     - name: Install nginx ingress controller
+  #       run: helm install nginx-ingress ingress-nginx/ingress-nginx
 
-  Helm_redis:
-    name: Install redis
-    # needs: Azure
-    runs-on: ubuntu-latest
-    steps: 
-      - uses: actions/checkout@v3
-      - name: Link to kubeconfig
-        run: export KUBECONFIG=.kube/config
-      - name: Install redis
-        run: helm repo add bitnami https://charts.bitnami.com/bitnami
-      - name: Update helm repo
-        run: helm repo update
-      - name: Install redis
-        run: helm install redis bitnami/redis
+  # Helm_redis:
+  #   name: Install redis
+  #   # needs: Azure
+  #   runs-on: ubuntu-latest
+  #   steps: 
+  #     - uses: actions/checkout@v3
+  #     - name: Link to kubeconfig
+  #       run: export KUBECONFIG=.kube/config
+  #     - name: Install redis
+  #       run: helm repo add bitnami https://charts.bitnami.com/bitnami
+  #     - name: Update helm repo
+  #       run: helm repo update
+  #     - name: Install redis
+  #       run: helm install redis bitnami/redis
 
   Terraform:
     name: Terraform init+validate+plan
