@@ -1,41 +1,78 @@
 name: Terraform 
 
 on:
-  workflow_dispatch:
-    inputs:
-      user_validation:
-        description: 'Validate the terraform code'
-        required: true
-        type: boolean
+#   workflow_dispatch:
+#     inputs:
+#       user_validation:
+#         description: 'Validate the terraform code'
+#         required: true
+#         type: boolean
 
   push:
     branches: 
         - master
 
 jobs:
+  Azure:
+    name: Install Azure CLI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Azure CLI
+
+        uses: azure/login@v1
+      - name: Azure CLI version
+        run: az login --tenant ${{ secrets.TENANT_ID }} -u ${{ secrets.USERNAME }} -p ${{ secrets.AZURE_CREDENTIALS }}
+    
+  # Helm:
+  #   name: Install Helm
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Install Helm
+  #       uses: azure/setup-helm@v1
+  #       with:
+  #         version: v3.2.4
+  #     - name: Helm version
+  #       run: helm version
+    
+  Helm_nginx:
+    name: Install nginx ingress controller
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v3
+      - name: Install nginx ingress controller
+        run: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+      - name: Update helm repo
+        run: helm repo update
+      - name: Install nginx ingress controller
+        run: helm install nginx-ingress ingress-nginx/ingress-nginx
+
   Terraform:
+    defaults:
+      run:
+        working-directory: ../../
+
     name: Terraform init+validate+plan
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Terraform init
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.0
-        tf_actions_subcommand: init
-        tf_actions_working_dir: ../../
-
-    - name: Terraform validate 
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.0
-        tf_actions_subcommand: validate
-        tf_actions_working_dir: ../../
-        
-    - name: Terraform plan 
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.0
-        tf_actions_subcommand: plan
-        tf_actions_working_dir: ../../
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+      
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+      
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan
+        continue-on-error: true
