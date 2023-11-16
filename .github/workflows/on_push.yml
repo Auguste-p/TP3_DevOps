@@ -59,7 +59,7 @@ jobs:
         run: python -m pip install --upgrade pip && pip install azure-cli
       # Selon moi, cette partie ne marche pas avec mes identifiants car il y a des caractères spéciaux dans le mot de passe, ce qui doit perturber la commande (malheureusement je ne peux pas le modifier car c'est un compte fourni par l'école)
       - name: Login via Azure CLI
-        run: az login --tenant "$TENANT_ID" -u "$AZURE_USERNAME" -p "$AZURE_PASSWORD" > /dev/null
+        run: az login -u "$AZURE_USERNAME" -p "$AZURE_PASSWORD" > /dev/null
           
       - name: Terraform fmt
         id: fmt
