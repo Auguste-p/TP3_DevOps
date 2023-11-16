@@ -1,7 +1,7 @@
 name: Terraform 
 
 on:
-#   workflow_dispatch:
+  workflow_dispatch:
 #     inputs:
 #       user_validation:
 #         description: 'Validate the terraform code'
@@ -34,6 +34,7 @@ jobs:
     
   Helm:
     name: Install Helm
+    needs: [Azure]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -46,6 +47,7 @@ jobs:
     
   Helm_nginx:
     name: Install nginx ingress controller
+    needs: [Azure]
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
@@ -60,6 +62,7 @@ jobs:
 
   Helm_redis:
     name: Install redis
+    needs: [Azure]
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
@@ -74,7 +77,7 @@ jobs:
 
   Terraform:
     name: Terraform init+validate+plan
-    #needs: [Azure, Helm_nginx, Helm_redis]
+    needs: [Azure]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
